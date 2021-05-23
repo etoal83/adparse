@@ -1,5 +1,5 @@
 use structopt::StructOpt;
-use std::io::{BufReader, BufRead};
+use std::io::BufReader;
 use anyhow::{Context, Result};
 
 #[derive(StructOpt)]
@@ -16,26 +16,7 @@ fn main() -> Result<()> {
         .with_context(|| format!("could not read path: {:?}", path.display()))?;
     let reader = BufReader::new(file);
 
-    find_mathes(reader, &args.pattern, &mut std::io::stdout())?;
+    adparse::find_matches(reader, &args.pattern, &mut std::io::stdout())?;
 
     Ok(())
-}
-
-fn find_mathes(reader: impl BufRead, pattern: &str, mut writer: impl std::io::Write) -> Result<()> {
-    for line in reader.lines() {
-        if let Ok(l) = line {
-            if l.contains(pattern) {
-                writeln!(writer, "{}", l)?;
-            }
-        }
-    }
-
-    Ok(())
-}
-
-#[test]
-fn find_a_match() {
-    let mut result = vec![];
-    find_mathes("In principio erat Verbum,\net Verbum erat apud Deum,\net Deus erat Verbum.".as_bytes(), "Deum", &mut result);
-    assert_eq!(result, b"et Verbum erat apud Deum,\n");
 }
