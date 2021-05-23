@@ -32,3 +32,10 @@ fn find_mathes(reader: impl BufRead, pattern: &str, mut writer: impl std::io::Wr
 
     Ok(())
 }
+
+#[test]
+fn find_a_match() {
+    let mut result = vec![];
+    find_mathes("In principio erat Verbum,\net Verbum erat apud Deum,\net Deus erat Verbum.".as_bytes(), "Deum", &mut result);
+    assert_eq!(result, b"et Verbum erat apud Deum,\n");
+}
