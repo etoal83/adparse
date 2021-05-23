@@ -1,6 +1,6 @@
 use structopt::StructOpt;
-use std::io::{BufReader, BufRead, Error};
-use std::fs::File;
+use std::io::{BufReader, BufRead};
+use anyhow::{Context, Result};
 
 #[derive(StructOpt)]
 struct Cli {
@@ -9,9 +9,11 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> Result<()> {
     let args = Cli::from_args();
-    let file = File::open(&args.path)?;
+    let path = args.path.clone();
+    let file = std::fs::File::open(&path)
+        .with_context(|| format!("could not read path: {:?}", path.display()))?;
     let reader = BufReader::new(file);
 
     for line in reader.lines() {
