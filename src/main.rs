@@ -16,13 +16,17 @@ fn main() -> Result<()> {
         .with_context(|| format!("could not read path: {:?}", path.display()))?;
     let reader = BufReader::new(file);
 
+    find_mathes(reader, &args.pattern);
+
+    Ok(())
+}
+
+fn find_mathes(reader: impl BufRead, pattern: &str) {
     for line in reader.lines() {
         if let Ok(l) = line {
-            if l.contains(&args.pattern) {
+            if l.contains(pattern) {
                 println!("{}", l);
             }
         }
     }
-
-    Ok(())
 }
