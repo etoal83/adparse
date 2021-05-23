@@ -16,17 +16,19 @@ fn main() -> Result<()> {
         .with_context(|| format!("could not read path: {:?}", path.display()))?;
     let reader = BufReader::new(file);
 
-    find_mathes(reader, &args.pattern);
+    find_mathes(reader, &args.pattern, &mut std::io::stdout())?;
 
     Ok(())
 }
 
-fn find_mathes(reader: impl BufRead, pattern: &str) {
+fn find_mathes(reader: impl BufRead, pattern: &str, mut writer: impl std::io::Write) -> Result<()> {
     for line in reader.lines() {
         if let Ok(l) = line {
             if l.contains(pattern) {
-                println!("{}", l);
+                writeln!(writer, "{}", l)?;
             }
         }
     }
+
+    Ok(())
 }
