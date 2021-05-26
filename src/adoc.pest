@@ -1,0 +1,7 @@
+content = { p ~ (NEWLINE{2, } ~ p)* }
+p = { text ~ (NEWLINE{, 1} ~ text)* }
+text = { (ASCII_ALPHANUMERIC | "'" | ".")+ }
+
+adoc = _{ SOI ~ content ~ EOI }
+
+WHITESPACE = _{ " " }
